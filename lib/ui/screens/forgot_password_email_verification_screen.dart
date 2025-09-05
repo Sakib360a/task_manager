@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/signup_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 import 'forgot_password_code_verification_screen.dart';
