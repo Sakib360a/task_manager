@@ -1,21 +1,22 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/login_screen.dart';
 import 'package:task_manager/ui/screens/signup_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 import 'forgot_password_email_verification_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ResetPassword extends StatefulWidget {
+  const ResetPassword({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ResetPassword> createState() => _ResetPasswordState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ResetPasswordState extends State<ResetPassword> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
+  final TextEditingController _confirmPasswordTEController = TextEditingController();
   final TapGestureRecognizer _signupTapRecognizer = TapGestureRecognizer();
 
   @override
@@ -33,23 +34,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   const SizedBox(height: 82),
                   Text(
-                    'Get Started With',
+                    'Reset Password',
                     style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Password should be at least 8 characters long, with a mix of letters, numbers and symbols.',
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 24),
                   TextFormField(
-                    controller: _emailTEController,
-                    decoration: InputDecoration(hintText: 'Email'),
+                    controller: _passwordTEController,
+                    keyboardType: TextInputType.visiblePassword,
+                    decoration: InputDecoration(hintText: 'New Password'),
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    controller: _passwordTEController,
-                    obscureText: true,
-                    decoration: InputDecoration(hintText: 'Password'),
+                    controller: _confirmPasswordTEController,
+                    keyboardType: TextInputType.visiblePassword,
+                    decoration: InputDecoration(hintText: 'Confirm Password'),
                   ),
                   const SizedBox(height: 16),
                   FilledButton(
-                    onPressed: () {},
+                    onPressed: _onTapResetPasswordButton,
                     child: Icon(Icons.navigate_next),
                   ),
                   const SizedBox(height: 36),
@@ -76,10 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextSpan(
                                 text: 'Sign Up',
                                 style: TextStyle(color: Color(0xff21bf73)),
-                                recognizer: _signupTapRecognizer..onTap = _onTapSignupButton,
+                                recognizer: _signupTapRecognizer
+                                  ..onTap = _onTapSignupButton,
                               ),
                             ],
-          
                           ),
                         ),
                       ],
@@ -93,16 +100,31 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  void _onTapForgotPasswordButton(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordEmailVerificationScreen()));
+
+  void _onTapForgotPasswordButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ForgotPasswordEmailVerificationScreen(),
+      ),
+    );
   }
-  void _onTapSignupButton(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>SignupScreen()));
+
+  void _onTapSignupButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignupScreen()),
+    );
   }
+
+  void _onTapResetPasswordButton() {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+  }
+
   @override
   void dispose() {
-    _emailTEController.dispose();
     _passwordTEController.dispose();
+    _confirmPasswordTEController.dispose();
     _signupTapRecognizer.dispose();
     // TODO: implement dispose
     super.dispose();
