@@ -118,7 +118,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   void _onTapResetPasswordButton() {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (predicate)=>false);
   }
 
   @override

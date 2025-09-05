@@ -11,10 +11,10 @@ class ForgotPasswordCodeVerificationScreen extends StatefulWidget {
 
   @override
   State<ForgotPasswordCodeVerificationScreen> createState() =>
-      _LoginScreenState();
+      _ForgotPasswordCodeVerificationScreenState();
 }
 
-class _LoginScreenState extends State<ForgotPasswordCodeVerificationScreen> {
+class _ForgotPasswordCodeVerificationScreenState extends State<ForgotPasswordCodeVerificationScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _codeTEController = TextEditingController();
   final TapGestureRecognizer _loginTapRecognizer = TapGestureRecognizer();
@@ -114,9 +114,9 @@ void _onTapVerifyButton(){
 
   @override
   void dispose() {
-    _codeTEController.dispose();
     _loginTapRecognizer.dispose();
     // TODO: implement dispose
     super.dispose();
+    _codeTEController.dispose();
   }
 }

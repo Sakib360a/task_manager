@@ -10,10 +10,10 @@ class ForgotPasswordEmailVerificationScreen extends StatefulWidget {
 
   @override
   State<ForgotPasswordEmailVerificationScreen> createState() =>
-      _LoginScreenState();
+      _ForgotPasswordEmailVerificationScreenState();
 }
 
-class _LoginScreenState extends State<ForgotPasswordEmailVerificationScreen> {
+class _ForgotPasswordEmailVerificationScreenState extends State<ForgotPasswordEmailVerificationScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailTEController = TextEditingController();
   @override
