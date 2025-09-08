@@ -4,6 +4,7 @@ import 'package:task_manager/ui/screens/signup_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 import 'forgot_password_email_verification_screen.dart';
+import 'main_navbar_holder_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -49,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
                   FilledButton(
-                    onPressed: () {},
+                    onPressed: _onTapLoginButton,
                     child: Icon(Icons.navigate_next),
                   ),
                   const SizedBox(height: 36),
@@ -95,6 +96,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
   void _onTapForgotPasswordButton(){
     Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordEmailVerificationScreen()));
+  }
+  void _onTapLoginButton(){
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MainNavbarHolderScreen()), (predicate)=>false);
   }
   void _onTapSignupButton(){
     Navigator.push(context, MaterialPageRoute(builder: (context)=>SignupScreen()));
