@@ -12,7 +12,9 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         spacing: 10,
         children: [
-          CircleAvatar(),
+          CircleAvatar(
+            child: Image.asset('assets/images/profile_placeholder.png'),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -23,7 +25,6 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
-        IconButton(onPressed: (){}, icon: Icon(Icons.notifications_none_outlined)),
         IconButton(onPressed: (){}, icon: Icon(Icons.search)),
         IconButton(onPressed: (){}, icon: Image.asset('assets/icons/logout_icon.png',scale: 18,)),
         SizedBox(width: 5,),

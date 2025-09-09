@@ -10,39 +10,35 @@ class TaskManagerApp extends StatelessWidget {
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
         textTheme: TextTheme(
-          titleLarge: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w600,
-          ),
+          titleLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+          titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+          bodySmall: TextStyle(fontSize: 12)
+
         ),
-        inputDecorationTheme:  InputDecorationTheme(
+        inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
           hintStyle: TextStyle(color: Colors.grey),
           contentPadding: EdgeInsets.symmetric(horizontal: 16),
-          border: OutlineInputBorder(
-              borderSide: BorderSide.none
-
-          ),
+          border: OutlineInputBorder(borderSide: BorderSide.none),
           enabledBorder: OutlineInputBorder(
-              //borderSide: BorderSide.none
-              borderSide: BorderSide(
+            //borderSide: BorderSide.none
+            borderSide: BorderSide(
               color: Color(0xffadadad).withOpacity(0.2),
-          width: 2,
-        )
+              width: 2,
+            ),
           ),
-          errorBorder: OutlineInputBorder(
-              borderSide: BorderSide.none
-          ),
+          errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
           focusedBorder: OutlineInputBorder(
-              //borderSide: BorderSide.none,
-              borderSide: BorderSide(
-                color: Color(0xffadadad).withOpacity(0.5),
-                width: 2,
-              ),
-            borderRadius: BorderRadius.circular(8)
-          )
-      ),
+            //borderSide: BorderSide.none,
+            borderSide: BorderSide(
+              color: Color(0xffadadad).withOpacity(0.5),
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
         filledButtonTheme: FilledButtonThemeData(
           style: FilledButton.styleFrom(
             backgroundColor: Color(0xff21bf73),
