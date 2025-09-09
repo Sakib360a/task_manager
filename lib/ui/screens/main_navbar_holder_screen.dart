@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/progress_task_screen.dart';
+
+import '../widgets/tm_app_bar.dart';
 class MainNavbarHolderScreen extends StatefulWidget {
   const MainNavbarHolderScreen({super.key});
 
@@ -18,28 +20,7 @@ class _MainNavbarHolderScreenState extends State<MainNavbarHolderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xff21bf73),
-        title: Row(
-          spacing: 10,
-          children: [
-            CircleAvatar(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Full Name',style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700,color: Colors.white)),
-                Text('email@gmail.com',style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white)),
-              ],
-            )
-          ],
-        ),
-        actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.notifications_none_outlined)),
-          IconButton(onPressed: (){}, icon: Icon(Icons.search)),
-          IconButton(onPressed: (){}, icon: Image.asset('assets/icons/logout_icon.png',scale: 18,)),
-          SizedBox(width: 5,),
-        ],
-      ),
+      appBar: TMAppBar(),
       body: _screens[_selectedIndex],
       bottomNavigationBar:NavigationBar(
           selectedIndex: _selectedIndex,
@@ -57,3 +38,4 @@ class _MainNavbarHolderScreenState extends State<MainNavbarHolderScreen> {
     );
   }
 }
+
