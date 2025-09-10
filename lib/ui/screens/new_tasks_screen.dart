@@ -25,15 +25,15 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
           children: [
             SizedBox(height: 8),
             SizedBox(
-              height: 90,
+              height: 100,
               child: ListView.separated(
                 itemCount: 4,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
-                  return TaskCountByStatusCard( status: 'New', count: 5,);
+                  return TaskCountByStatusCard( status: 'In Progress', count: 5,);
                 },
                 separatorBuilder: (context, int index) {
-                  return SizedBox(width: 8);
+                  return SizedBox(width: 10);
                 },
               ),
             ),
