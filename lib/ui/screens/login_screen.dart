@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 82),
+                  const SizedBox(height: 100),
                   Text(
                     'Get Started With',
                     style: Theme.of(context).textTheme.titleLarge,

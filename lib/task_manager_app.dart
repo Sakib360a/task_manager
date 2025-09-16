@@ -12,9 +12,8 @@ class TaskManagerApp extends StatelessWidget {
         textTheme: TextTheme(
           titleLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
           titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-          bodySmall: TextStyle(fontSize: 12)
-
+          bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+          bodySmall: TextStyle(fontSize: 12),
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,

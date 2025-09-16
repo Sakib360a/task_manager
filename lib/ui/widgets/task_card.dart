@@ -43,7 +43,7 @@ final String status;
                 children: [
                   Container(
                     margin: EdgeInsets.zero,
-                    width: 107,
+                    width: 100,
                     alignment: Alignment.center,
                     padding: EdgeInsets.symmetric(
                       horizontal: 16,
@@ -58,7 +58,7 @@ final String status;
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
-                        fontSize: 14,
+                        fontSize: 12,
                       ),
                     ),
                   ),
