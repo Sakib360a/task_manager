@@ -6,6 +6,7 @@ import 'add_new_task.dart';
 
 class NewTasksScreen extends StatefulWidget {
   const NewTasksScreen({super.key});
+  static const String name= '/new-task';
 
   @override
   State<NewTasksScreen> createState() => _NewTasksScreenState();
@@ -14,7 +15,7 @@ class NewTasksScreen extends StatefulWidget {
 class _NewTasksScreenState extends State<NewTasksScreen> {
   void _onTapFloatingAddButton ()
   {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>AddNewTask()));
+    Navigator.pushNamed(context, AddNewTask.name);
   }
   @override
   Widget build(BuildContext context) {

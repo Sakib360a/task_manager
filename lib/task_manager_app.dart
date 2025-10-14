@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/add_new_task.dart';
+import 'package:task_manager/ui/screens/cancelled_task_screen.dart';
+import 'package:task_manager/ui/screens/completed_task_screen.dart';
+import 'package:task_manager/ui/screens/forgot_password_code_verification_screen.dart';
+import 'package:task_manager/ui/screens/forgot_password_email_verification_screen.dart';
+import 'package:task_manager/ui/screens/login_screen.dart';
+import 'package:task_manager/ui/screens/main_navbar_holder_screen.dart';
+import 'package:task_manager/ui/screens/new_tasks_screen.dart';
+import 'package:task_manager/ui/screens/progress_task_screen.dart';
+import 'package:task_manager/ui/screens/reset_password.dart';
+import 'package:task_manager/ui/screens/signup_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
+import 'package:task_manager/ui/screens/update_profile_screen.dart';
 
 class TaskManagerApp extends StatelessWidget {
   const TaskManagerApp({super.key});
@@ -50,7 +62,22 @@ class TaskManagerApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      initialRoute: SplashScreen.name,
+      routes: {
+        SplashScreen.name: (_)=>SplashScreen(),
+        LoginScreen.name: (_)=>LoginScreen(),
+        SignupScreen.name: (_)=>SignupScreen(),
+        MainNavbarHolderScreen.name: (_)=>MainNavbarHolderScreen(),
+        NewTasksScreen.name: (_)=>NewTasksScreen(),
+        ProgressTaskScreen.name: (_)=>ProgressTaskScreen(),
+        ResetPassword.name: (_)=>ResetPassword(),
+        UpdateProfileScreen.name: (_)=>UpdateProfileScreen(),
+        CompletedTaskScreen.name: (_)=>CompletedTaskScreen(),
+        CancelledTaskScreen.name: (_)=> CancelledTaskScreen(),
+        AddNewTask.name: (_)=> AddNewTask(),
+        ForgotPasswordEmailVerificationScreen.name: (_)=>ForgotPasswordEmailVerificationScreen(),
+        ForgotPasswordCodeVerificationScreen.name: (_)=>ForgotPasswordCodeVerificationScreen(),
+      },
     );
   }
 }

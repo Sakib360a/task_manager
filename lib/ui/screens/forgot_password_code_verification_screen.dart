@@ -7,6 +7,7 @@ import 'package:task_manager/ui/widgets/screen_background.dart';
 
 class ForgotPasswordCodeVerificationScreen extends StatefulWidget {
   const ForgotPasswordCodeVerificationScreen({super.key});
+  static const String name= '/forgot-pass-code';
 
   @override
   State<ForgotPasswordCodeVerificationScreen> createState() =>
@@ -104,11 +105,11 @@ class _ForgotPasswordCodeVerificationScreenState extends State<ForgotPasswordCod
   }
 
   void _onTapLoginButton() {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (predicate)=>false);
+    Navigator.pushNamedAndRemoveUntil(context,LoginScreen.name, (predicate)=>false);
   }
 void _onTapVerifyButton(){
     _codeTEController.clear();
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>ResetPassword()));
+    Navigator.pushNamed(context, ResetPassword.name);
 }
 
   @override

@@ -5,6 +5,7 @@ import '../widgets/task_count_by_status_card.dart';
 
 class CompletedTaskScreen extends StatefulWidget {
   const CompletedTaskScreen({super.key});
+  static const String name= '/completed-task';
 
   @override
   State<CompletedTaskScreen> createState() => _CompletedTaskScreenState();

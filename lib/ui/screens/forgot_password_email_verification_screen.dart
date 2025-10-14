@@ -6,6 +6,7 @@ import 'forgot_password_code_verification_screen.dart';
 
 class ForgotPasswordEmailVerificationScreen extends StatefulWidget {
   const ForgotPasswordEmailVerificationScreen({super.key});
+  static const String name= '/forgot-pass';
 
   @override
   State<ForgotPasswordEmailVerificationScreen> createState() =>
@@ -81,11 +82,9 @@ class _ForgotPasswordEmailVerificationScreenState extends State<ForgotPasswordEm
   }
 
   void _onTapNextButton() {
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => ForgotPasswordCodeVerificationScreen(),
-      ),
+      ForgotPasswordCodeVerificationScreen.name,
     );
   }
 

@@ -5,6 +5,7 @@ import '../widgets/task_count_by_status_card.dart';
 
 class CancelledTaskScreen extends StatefulWidget {
   const CancelledTaskScreen({super.key});
+  static const String name= '/cancelled-task';
 
   @override
   State<CancelledTaskScreen> createState() => _CancelledTaskScreenState();

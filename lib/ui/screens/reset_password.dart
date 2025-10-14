@@ -8,6 +8,7 @@ import 'forgot_password_email_verification_screen.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
+  static const String name= '/reset-pass';
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();
@@ -102,23 +103,21 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   void _onTapForgotPasswordButton() {
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => ForgotPasswordEmailVerificationScreen(),
-      ),
+      ForgotPasswordEmailVerificationScreen.name
     );
   }
 
   void _onTapSignupButton() {
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(builder: (context) => SignupScreen()),
+      SignupScreen.name
     );
   }
 
   void _onTapResetPasswordButton() {
-Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (predicate)=>false);
+Navigator.pushNamedAndRemoveUntil(context, LoginScreen.name, (predicate)=>false);
   }
 
   @override

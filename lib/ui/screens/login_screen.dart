@@ -8,6 +8,7 @@ import 'main_navbar_holder_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+  static const String name= '/login';
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -95,13 +96,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
   void _onTapForgotPasswordButton(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordEmailVerificationScreen()));
+    Navigator.pushNamed(context, ForgotPasswordEmailVerificationScreen.name);
   }
   void _onTapLoginButton(){
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MainNavbarHolderScreen()), (predicate)=>false);
+    Navigator.pushNamedAndRemoveUntil(context, MainNavbarHolderScreen.name, (predicate)=>false);
   }
   void _onTapSignupButton(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>SignupScreen()));
+    Navigator.pushNamed(context, SignupScreen.name);
   }
   @override
   void dispose() {
