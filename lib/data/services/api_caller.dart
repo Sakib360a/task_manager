@@ -9,7 +9,7 @@ class ApiCaller {
       Uri uri = Uri.parse(url);
       _logRequest(url);
       Response response = await get(uri);
-      _logResponse(url,response);
+      _logResponse(url, response);
       final int statusCode = response.statusCode;
 
       if (response.statusCode == 200) {
@@ -39,12 +39,20 @@ class ApiCaller {
       );
     }
   }
-  static Future<ApiResponse> postRequest({required String url, Map<String,dynamic>?body}) async {
+
+  static Future<ApiResponse> postRequest({
+    required String url,
+    Map<String, dynamic>? body,
+  }) async {
     try {
       Uri uri = Uri.parse(url);
-      _logRequest(url,body: body);
-      Response response = await post(uri);
-      _logResponse(url,response);
+      _logRequest(url, body: body);
+      Response response = await post(
+        uri,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode(body),
+      );
+      _logResponse(url, response);
       final int statusCode = response.statusCode;
 
       if (statusCode == 200 || statusCode == 201) {
@@ -75,14 +83,19 @@ class ApiCaller {
     }
   }
 
-  static void _logRequest(String? url,{Map<String,dynamic>?body}) {
-    _logger.i("URL=> $url"
-    'Body: $body');
+  static void _logRequest(String? url, {Map<String, dynamic>? body}) {
+    _logger.i(
+      "URL=> $url"
+      'Body: $body',
+    );
   }
+
   static void _logResponse(String? url, Response response) {
-    _logger.i("URL=> $url\n"
-    'StatusCode: ${response.statusCode}\n'
-    'Body: ${response.body}\n');
+    _logger.i(
+      "URL=> $url\n"
+      'StatusCode: ${response.statusCode}\n'
+      'Body: ${response.body}\n',
+    );
   }
 }
 
