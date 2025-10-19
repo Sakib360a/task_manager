@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/task_status_count_model.dart';
+import 'package:task_manager/data/services/api_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
+import 'package:task_manager/ui/widgets/center_circular_progress_indicator.dart';
+import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 
 import '../widgets/task_card.dart';
 import '../widgets/task_count_by_status_card.dart';
@@ -6,17 +11,47 @@ import 'add_new_task_screen.dart';
 
 class NewTasksScreen extends StatefulWidget {
   const NewTasksScreen({super.key});
-  static const String name= '/new-task';
+  static const String name = '/new-task';
 
   @override
   State<NewTasksScreen> createState() => _NewTasksScreenState();
 }
 
 class _NewTasksScreenState extends State<NewTasksScreen> {
-  void _onTapFloatingAddButton ()
-  {
-    Navigator.pushNamed(context, AddNewTask.name);
+  bool _getTaskStatusCountInProgress = false;
+  List<TaskStatusCountModel> _taskStatusCountList = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getAllTaskStatusCount();
   }
+  void _onTapFloatingAddButton() {
+    Navigator.pushNamed(context, AddNewTask.name).then((value) {
+      _getAllTaskStatusCount();
+    });
+  }
+
+  Future<void> _getAllTaskStatusCount() async {
+    _getTaskStatusCountInProgress = true;
+    setState(() {});
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: Urls.taskStatusCountUrl,
+    );
+    if(response.isSuccess){
+      List<TaskStatusCountModel> list = [];
+      for(Map<String, dynamic> jsonData in response.responseData['data']){
+        list.add(TaskStatusCountModel.fromJson(jsonData));
+      }
+      _taskStatusCountList = list;
+    }
+    else{
+      showSnackBarMessage(context, response.errorMessage!);
+    }
+    _getTaskStatusCountInProgress = false;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,24 +62,32 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
             SizedBox(height: 8),
             SizedBox(
               height: 100,
-              child: ListView.separated(
-                itemCount: 4,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return TaskCountByStatusCard( status: 'In Progress', count: 5,);
-                },
-                separatorBuilder: (context, int index) {
-                  return SizedBox(width: 10);
-                },
+              child: Visibility(
+                visible: _getTaskStatusCountInProgress==false,
+                replacement: CenterCircularProgressIndicator(),
+                child: ListView.separated(
+                  itemCount: _taskStatusCountList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return TaskCountByStatusCard(status: _taskStatusCountList[index].status, count:  _taskStatusCountList[index].count);
+                  },
+                  separatorBuilder: (context, int index) {
+                    return SizedBox(width: 10);
+                  },
+                ),
               ),
             ),
-            SizedBox(height: 16,),
+            SizedBox(height: 16),
             Expanded(
-              child: ListView.separated( itemCount: 10,itemBuilder: (context,index){
-                return TaskCard(color: Color(0xff46bae4), status: 'New',);
-              }, separatorBuilder: (context,index){
-                return SizedBox(height: 0,);
-              },)
+              child: ListView.separated(
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return TaskCard(color: Color(0xff46bae4), status: 'New');
+                },
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 0);
+                },
+              ),
             ),
           ],
         ),
@@ -58,5 +101,3 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
     );
   }
 }
-
-
