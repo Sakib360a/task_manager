@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/add_new_task.dart';
+import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 import 'package:task_manager/ui/screens/cancelled_task_screen.dart';
 import 'package:task_manager/ui/screens/completed_task_screen.dart';
 import 'package:task_manager/ui/screens/forgot_password_code_verification_screen.dart';

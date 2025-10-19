@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/task_card.dart';
 import '../widgets/task_count_by_status_card.dart';
-import 'add_new_task.dart';
+import 'add_new_task_screen.dart';
 
 class NewTasksScreen extends StatefulWidget {
   const NewTasksScreen({super.key});
