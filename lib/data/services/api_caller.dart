@@ -70,6 +70,7 @@ class ApiCaller {
           isSuccess: false,
           responseData: decodedData,
           responseCode: statusCode,
+          errorMessage: decodedData['data'],
         );
       }
     } on Exception catch (e) {
