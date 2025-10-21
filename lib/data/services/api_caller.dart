@@ -1,17 +1,26 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
+import 'package:task_manager/task_manager_app.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
+import 'package:task_manager/ui/screens/login_screen.dart';
 
 class ApiCaller {
   static final Logger _logger = Logger();
+
+  //GET Request
   static Future<ApiResponse> getRequest({required String url}) async {
     try {
       Uri uri = Uri.parse(url);
       _logRequest(url);
-      Response response = await get(uri,headers: {
-        'token': AuthController.accessToken ?? '',
-      });
+      Response response = await get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'token': AuthController.accessToken ?? ''
+        },
+      );
       _logResponse(url, response);
       final int statusCode = response.statusCode;
 
@@ -21,6 +30,14 @@ class ApiCaller {
         return ApiResponse(
           isSuccess: true,
           responseData: decodedData,
+          responseCode: statusCode,
+        );
+      } else if (response.statusCode == 401) {
+        await _moveToLogin();
+        return ApiResponse(
+          isSuccess: false,
+          responseData: null,
+          errorMessage: 'Un-authorized',
           responseCode: statusCode,
         );
       } else {
@@ -43,6 +60,7 @@ class ApiCaller {
     }
   }
 
+  // POST Request
   static Future<ApiResponse> postRequest({
     required String url,
     Map<String, dynamic>? body,
@@ -67,6 +85,14 @@ class ApiCaller {
         return ApiResponse(
           isSuccess: true,
           responseData: decodedData,
+          responseCode: statusCode,
+        );
+      } else if (response.statusCode == 401) {
+        await _moveToLogin();
+        return ApiResponse(
+          isSuccess: false,
+          responseData: null,
+          errorMessage: 'Un-authorized',
           responseCode: statusCode,
         );
       } else {
@@ -102,6 +128,15 @@ class ApiCaller {
       "URL=> $url\n"
       'StatusCode: ${response.statusCode}\n'
       'Body: ${response.body}\n',
+    );
+  }
+
+  static Future<void> _moveToLogin() async {
+    await AuthController.clearUserData();
+    Navigator.pushNamedAndRemoveUntil(
+      TaskManagerApp.navigator.currentContext!,
+      LoginScreen.name,
+      (predicate) => false,
     );
   }
 }

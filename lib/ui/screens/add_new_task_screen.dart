@@ -142,7 +142,6 @@ class _AddNewTaskState extends State<AddNewTask> {
       Navigator.of(context).pop();
     } else {
       showSnackBarMessage(context, response.errorMessage!);
-
     }
     setState(() {
       _addNewTaskProgress = false;
