@@ -19,7 +19,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _moveToNextScreen();
   }
@@ -39,7 +38,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenBackground(child: Center(
-        child: SvgPicture.asset(AssetPaths.logoSvg,height: 40,),
+        //child: SvgPicture.asset(AssetPaths.logoSvg,height: 40,),
+        child: Image.asset('assets/images/logoEducational.png',scale: 5,),
       ),
     )
     );
