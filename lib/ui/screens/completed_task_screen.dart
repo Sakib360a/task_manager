@@ -1,17 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/task_model.dart';
+import 'package:task_manager/data/models/task_status_count_model.dart';
+import 'package:task_manager/data/services/api_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
+import 'package:task_manager/ui/widgets/center_circular_progress_indicator.dart';
+import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 
 import '../widgets/task_card.dart';
 import '../widgets/task_count_by_status_card.dart';
 
 class CompletedTaskScreen extends StatefulWidget {
   const CompletedTaskScreen({super.key});
-  static const String name= '/completed-task';
+  static const String name = '/completed-task';
 
   @override
   State<CompletedTaskScreen> createState() => _CompletedTaskScreenState();
 }
 
 class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
+  List<TaskModel> _completedTaskList = [];
+  bool _getCompletedTasksInProgress = false;
+  List<TaskStatusCountModel> _taskStatusCountList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getCompletedTasks();
+    _getAllTaskStatusCount();
+  }
+
+  Future<void> _getAllTaskStatusCount() async {
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: Urls.taskStatusCountUrl,
+    );
+    if (response.isSuccess) {
+      List<TaskStatusCountModel> list = [];
+      for (Map<String, dynamic> jsonData in response.responseData['data']) {
+        list.add(TaskStatusCountModel.fromJson(jsonData));
+      }
+      _taskStatusCountList = list;
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+  }
+
+  Future<void> _getCompletedTasks() async {
+    _getCompletedTasksInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: Urls.completedTaskUrl,
+    );
+    if (response.isSuccess) {
+      List<TaskModel> list = [];
+      for (Map<String, dynamic> jsonData in response.responseData['data']) {
+        list.add(TaskModel.fromJson(jsonData));
+      }
+      _completedTaskList = list;
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+    _getCompletedTasksInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _deleteTask(String id) async {
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: '${Urls.deleteTaskUrl}/$id',
+    );
+    if (response.isSuccess) {
+      await Future.wait([_getCompletedTasks(), _getAllTaskStatusCount()]);
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,13 +94,57 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Expanded(
-                child: ListView.separated( itemCount: 10,itemBuilder: (context,index){
-                  return TaskCard(color: Color(0xff43b867), status: 'Completed',);
-                }, separatorBuilder: (context,index){
-                  return SizedBox(height: 0,);
-                },)
+            SizedBox(
+              height: 100,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _taskStatusCountList.where((e) => e.status == 'Completed').map((e) {
+                    return TaskCountByStatusCard(
+                      status: 'Completed',
+                      count: e.count,
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
+            Expanded(
+                child: Visibility(
+              visible: _getCompletedTasksInProgress == false,
+              replacement: const CenterCircularProgressIndicator(),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await Future.wait([_getCompletedTasks(), _getAllTaskStatusCount()]);
+                },
+                child: Visibility(
+                  visible: _completedTaskList.isNotEmpty,
+                  replacement: const Center(
+                    child: Text('No completed tasks'),
+                  ),
+                  child: ListView.separated(
+                    itemCount: _completedTaskList.length,
+                    itemBuilder: (context, index) {
+                      return TaskCard(
+                        title: _completedTaskList[index].title ?? '',
+                        description: _completedTaskList[index].description ?? '',
+                        color: const Color(0xff43b867),
+                        status: 'Completed',
+                        date: _completedTaskList[index].createdDate ?? '',
+                        onDelete: () async {
+                          await _deleteTask(_completedTaskList[index].sId!);
+                        },
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(
+                        height: 0,
+                      );
+                    },
+                  ),
+                ),
+              ),
+            )),
           ],
         ),
       ),

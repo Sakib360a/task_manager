@@ -95,7 +95,8 @@ class ApiCaller {
           errorMessage: 'Un-authorized',
           responseCode: statusCode,
         );
-      } else {
+      }
+      else {
         //Failed
         final decodedData = jsonDecode(response.body);
         return ApiResponse(
@@ -118,7 +119,7 @@ class ApiCaller {
 
   static void _logRequest(String? url, {Map<String, dynamic>? body}) {
     _logger.i(
-      "URL=> $url"
+      "URL=> $url\n"
       'Body: $body',
     );
   }

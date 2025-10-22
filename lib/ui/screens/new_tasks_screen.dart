@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/task_model.dart';
 import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/data/services/api_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
@@ -18,38 +19,80 @@ class NewTasksScreen extends StatefulWidget {
 }
 
 class _NewTasksScreenState extends State<NewTasksScreen> {
-  bool _getTaskStatusCountInProgress = false;
+  bool _getNewTasksInProgress = false;
   List<TaskStatusCountModel> _taskStatusCountList = [];
+  List<TaskModel> _newTaskList = [];
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getAllTaskStatusCount();
+    _getNewTasks();
   }
+
   void _onTapFloatingAddButton() {
     Navigator.pushNamed(context, AddNewTask.name).then((value) {
       _getAllTaskStatusCount();
+      _getNewTasks();
     });
   }
 
   Future<void> _getAllTaskStatusCount() async {
-    _getTaskStatusCountInProgress = true;
-    setState(() {});
     final ApiResponse response = await ApiCaller.getRequest(
       url: Urls.taskStatusCountUrl,
     );
-    if(response.isSuccess){
+    if (response.isSuccess) {
       List<TaskStatusCountModel> list = [];
-      for(Map<String, dynamic> jsonData in response.responseData['data']){
+      for (Map<String, dynamic> jsonData in response.responseData['data']) {
         list.add(TaskStatusCountModel.fromJson(jsonData));
       }
       _taskStatusCountList = list;
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
     }
-    else{
-      showSnackBarMessage(context, response.errorMessage!);
+  }
+
+  Future<void> _getNewTasks() async {
+    _getNewTasksInProgress = true;
+    if (mounted) {
+      setState(() {});
     }
-    _getTaskStatusCountInProgress = false;
-    setState(() {});
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: Urls.newTasksUrl,
+    );
+    if (response.isSuccess) {
+      List<TaskModel> list = [];
+      for (Map<String, dynamic> jsonData in response.responseData['data']) {
+        list.add(TaskModel.fromJson(jsonData));
+      }
+      _newTaskList = list;
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+    _getNewTasksInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _deleteTask(String id) async {
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: '${Urls.deleteTaskUrl}/$id',
+    );
+    if (response.isSuccess) {
+      await Future.wait([_getNewTasks(), _getAllTaskStatusCount()]);
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
   }
 
   @override
@@ -59,34 +102,55 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            SizedBox(height: 8),
             SizedBox(
               height: 100,
-              child: Visibility(
-                visible: _getTaskStatusCountInProgress==false,
-                replacement: CenterCircularProgressIndicator(),
-                child: ListView.separated(
-                  itemCount: _taskStatusCountList.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return TaskCountByStatusCard(status: _taskStatusCountList[index].status, count:  _taskStatusCountList[index].count);
-                  },
-                  separatorBuilder: (context, int index) {
-                    return SizedBox(width: 10);
-                  },
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _taskStatusCountList.where((e) => e.status == 'New').map((e) {
+                    return TaskCountByStatusCard(
+                      status: 'New',
+                      count: e.count,
+                    );
+                  }).toList(),
                 ),
               ),
             ),
             SizedBox(height: 16),
             Expanded(
-              child: ListView.separated(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return TaskCard(color: Color(0xff46bae4), status: 'New');
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(height: 0);
-                },
+              child: Visibility(
+                visible: _getNewTasksInProgress == false,
+                replacement: const CenterCircularProgressIndicator(),
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await Future.wait([_getNewTasks(), _getAllTaskStatusCount()]);
+                  },
+                  child: Visibility(
+                    visible: _newTaskList.isNotEmpty,
+                    replacement: const Center(
+                      child: Text('No new tasks'),
+                    ),
+                    child: ListView.separated(
+                      itemCount: _newTaskList.length,
+                      itemBuilder: (context, index) {
+                        return TaskCard(
+                          title: _newTaskList[index].title ?? '',
+                          description: _newTaskList[index].description ?? '',
+                          color: Color(0xff46bae4),
+                          status: 'New',
+                          date: _newTaskList[index].createdDate ?? '',
+                          onDelete: () async {
+                            await _deleteTask(_newTaskList[index].sId!);
+                          },
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return SizedBox(height: 0);
+                      },
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

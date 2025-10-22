@@ -1,15 +1,36 @@
 import 'package:flutter/material.dart';
 
-class TaskCard extends StatelessWidget {
+class TaskCard extends StatefulWidget {
   const TaskCard({
-    super.key, required this.color, required this.status,
+    super.key,
+    required this.color,
+    required this.status,
+    required this.title,
+    required this.description,
+    required this.date,
+    required this.onDelete,
+    this.onStatusEdit,
   });
-final Color color;
-final String status;
+
+  final Color color;
+  final String status;
+  final String title;
+  final String description;
+  final String date;
+  final Future<void> Function() onDelete;
+  final VoidCallback? onStatusEdit;
+
+  @override
+  State<TaskCard> createState() => _TaskCardState();
+}
+
+class _TaskCardState extends State<TaskCard> {
+  bool _isDeleting = false;
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       color: Colors.white,
       child: SizedBox(
         width: double.maxFinite,
@@ -24,20 +45,19 @@ final String status;
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Lorem Ipsum is simply dummy',
+                widget.title,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Padding(
-                padding: EdgeInsets.only(right: 24),
+                padding: const EdgeInsets.only(right: 24),
                 child: Text(
-                  'stars whisper secrets across the sky time forgets nothing but forgives everything',
+                  widget.description,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
-              SizedBox(height: 4),
-              Text('Date: 09/09/2025'),
-              //SizedBox(height: 8),
+              const SizedBox(height: 4),
+              Text('Date: ${widget.date}'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -45,17 +65,17 @@ final String status;
                     margin: EdgeInsets.zero,
                     width: 100,
                     alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: color,
+                      color: widget.color,
                       borderRadius: BorderRadius.circular(32),
                     ),
                     child: Text(
-                      status,
-                      style: TextStyle(
+                      widget.status,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                         fontSize: 12,
@@ -65,20 +85,38 @@ final String status;
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: widget.onStatusEdit,
                         icon: Image.asset(
                           'assets/icons/details_icon.png',
                           scale: 22,
                         ),
                       ),
-                      //SizedBox(width: 4),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Image.asset(
-                          'assets/icons/delete_icon.png',
-                          scale: 20,
+                      if (_isDeleting)
+                        const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator()),
+                        )
+                      else
+                        IconButton(
+                          onPressed: () async {
+                            setState(() {
+                              _isDeleting = true;
+                            });
+                            await widget.onDelete();
+                            if (mounted) {
+                              setState(() {
+                                _isDeleting = false;
+                              });
+                            }
+                          },
+                          icon: Image.asset(
+                            'assets/icons/delete_icon.png',
+                            scale: 20,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ],
