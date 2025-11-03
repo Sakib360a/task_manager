@@ -87,6 +87,72 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
     }
   }
 
+  Future<void> _updateTaskStatus(String id, String status) async {
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: '${Urls.updateTaskUrl}/$id/$status',
+    );
+    if (response.isSuccess) {
+      await Future.wait([_getCompletedTasks(), _getAllTaskStatusCount()]);
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+  }
+
+  void _showStatusUpdateBottomSheet(TaskModel task) {
+    String? selectedStatus = task.status;
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Update Status'),
+                  const SizedBox(height: 16),
+                  RadioListTile(
+                    title: const Text('In Progress'),
+                    value: 'InProgress',
+                    groupValue: selectedStatus,
+                    onChanged: (value) {
+                      selectedStatus = value;
+                      setState(() {});
+                    },
+                  ),
+                  RadioListTile(
+                    title: const Text('Cancelled'),
+                    value: 'Cancelled',
+                    groupValue: selectedStatus,
+                    onChanged: (value) {
+                      selectedStatus = value;
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (selectedStatus != null && selectedStatus != task.status) {
+                        await _updateTaskStatus(task.sId!, selectedStatus!);
+                      }
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Update'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,6 +199,9 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
                         date: _completedTaskList[index].createdDate ?? '',
                         onDelete: () async {
                           await _deleteTask(_completedTaskList[index].sId!);
+                        },
+                        onStatusEdit: () {
+                          _showStatusUpdateBottomSheet(_completedTaskList[index]);
                         },
                       );
                     },

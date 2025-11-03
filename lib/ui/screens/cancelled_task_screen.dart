@@ -19,7 +19,6 @@ class CancelledTaskScreen extends StatefulWidget {
 
 class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
   List<TaskModel> _cancelledTaskList = [];
-  bool _getTaskStatusCountInProgress = false;
   bool _getCancelledTasksInProgress = false;
   List<TaskStatusCountModel> _taskStatusCountList = [];
 
@@ -31,7 +30,6 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
   }
 
   Future<void> _getAllTaskStatusCount() async {
-    _getTaskStatusCountInProgress = true;
     if (mounted) {
       setState(() {});
     }
@@ -49,7 +47,6 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
         showSnackBarMessage(context, response.errorMessage!);
       }
     }
-    _getTaskStatusCountInProgress = false;
     if (mounted) {
       setState(() {});
     }
@@ -93,6 +90,72 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
     }
   }
 
+  Future<void> _updateTaskStatus(String id, String status) async {
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: '${Urls.updateTaskUrl}/$id/$status',
+    );
+    if (response.isSuccess) {
+      await Future.wait([_getCancelledTasks(), _getAllTaskStatusCount()]);
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+  }
+
+  void _showStatusUpdateBottomSheet(TaskModel task) {
+    String? selectedStatus = task.status;
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Update Status'),
+                  const SizedBox(height: 16),
+                  RadioListTile(
+                    title: const Text('In Progress'),
+                    value: 'InProgress',
+                    groupValue: selectedStatus,
+                    onChanged: (value) {
+                      selectedStatus = value;
+                      setState(() {});
+                    },
+                  ),
+                  RadioListTile(
+                    title: const Text('Completed'),
+                    value: 'Completed',
+                    groupValue: selectedStatus,
+                    onChanged: (value) {
+                      selectedStatus = value;
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (selectedStatus != null && selectedStatus != task.status) {
+                        await _updateTaskStatus(task.sId!, selectedStatus!);
+                      }
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Update'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,20 +165,16 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
           children: [
             SizedBox(
               height: 100,
-              child: Visibility(
-                visible: _getTaskStatusCountInProgress == false,
-                replacement: const CenterCircularProgressIndicator(),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: _taskStatusCountList.where((e) => e.status == 'Cancelled').map((e) {
-                      return TaskCountByStatusCard(
-                        status: 'Cancelled',
-                        count: e.count,
-                      );
-                    }).toList(),
-                  ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _taskStatusCountList.where((e) => e.status == 'Cancelled').map((e) {
+                    return TaskCountByStatusCard(
+                      status: 'Cancelled',
+                      count: e.count,
+                    );
+                  }).toList(),
                 ),
               ),
             ),
@@ -143,6 +202,9 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
                         date: _cancelledTaskList[index].createdDate ?? '',
                         onDelete: () async {
                           await _deleteTask(_cancelledTaskList[index].sId!);
+                        },
+                        onStatusEdit: () {
+                          _showStatusUpdateBottomSheet(_cancelledTaskList[index]);
                         },
                       );
                     },
